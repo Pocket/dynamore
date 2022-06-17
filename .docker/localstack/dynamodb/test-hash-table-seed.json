@@ -1,0 +1,52 @@
+{
+    "test-hash-table": [
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {
+                        "S": "abc123"
+                    },
+                    "name": {
+                        "S": "dracula"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {
+                        "S": "def456"
+                    },
+                    "name": {
+                        "S": "adrian"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {
+                        "S": "hij789"
+                    },
+                    "name": {
+                        "S": "sypha"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {
+                        "S": "klm123"
+                    },
+                    "name": {
+                        "S": "trevor"
+                    }
+                }
+            }
+        }
+    ]
+}

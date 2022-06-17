@@ -1,0 +1,21 @@
+version: '3.1'
+services:
+  localstack:
+    image: localstack/localstack@sha256:9526a606ab264f93bb8386096552501b2c25a5768477ac3a0833f7355b062c53
+    env_file:
+      - .docker/local.env
+    ports:
+      - '4566:4566'
+      - '8081:8081'
+    volumes:
+      - ./.docker/localstack:/docker-entrypoint-initaws.d
+    environment:
+      - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY}
+      - DEBUG=1
+      - SERVICES=dynamodb
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - PORT_WEB_UI=8081
+      - EXTRA_CORS_ALLOWED_HEADERS=Content-Disposition, Content-Type, x-amz-acl
+      - EXTRA_CORS_EXPOSE_HEADERS=ETag
+      - HOSTNAME_EXTERNAL=localstack

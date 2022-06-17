@@ -1,0 +1,13 @@
+{
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "jestrunner.debugOptions": {
+    "args": ["--forceExit", "--testTimeout=100000", "--runInBand"]
+  },
+  "jestrunner.runOptions": ["--forceExit", "--runInBand"],
+  "jestrunner.codeLensSelector": "**/*.{test,spec,integration}.{js,jsx,ts,tsx}"
+}
