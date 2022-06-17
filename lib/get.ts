@@ -13,7 +13,7 @@ import { backoff } from './utils';
 import { GetManyOutput, BatchGetItemKeys } from './types';
 
 export class DynamoreGetMany
-  implements
+implements
     DynamoreBuilder<BatchGetCommandInput, BatchGetCommand, GetManyOutput>
 {
   private _command: BatchGetCommandInput;
@@ -101,7 +101,7 @@ export class DynamoreGetMany
     return res as any;
   }
 
-  async *yield() {
+  private async *yield() {
     // TODO: Split out requests > 100
     // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html
     // TODO: Error handling?
@@ -132,7 +132,7 @@ export class DynamoreGetMany
 }
 
 export class DynamoreGet
-  implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
+implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
 {
   private _command: GetCommandInput;
   /**
