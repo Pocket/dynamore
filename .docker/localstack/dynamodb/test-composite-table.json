@@ -7,9 +7,8 @@
         "KeyType": "HASH"
       },
       {
-          "AttributeName": "powerLevel",
-          "KeyType": "RANGE"
-
+        "AttributeName": "powerLevel",
+        "KeyType": "RANGE"
       }
     ],
     "AttributeDefinitions": [
