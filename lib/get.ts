@@ -13,12 +13,20 @@ import { backoff } from './utils';
 import { GetManyOutput, BatchGetItemKeys } from './types';
 
 export class DynamoreGetMany
-implements
+  implements
     DynamoreBuilder<BatchGetCommandInput, BatchGetCommand, GetManyOutput>
 {
   private _command: BatchGetCommandInput;
   private maxBackoff: number;
-
+  /**
+   * Builder for retrieving a multiple items from a table, by key.
+   * This class should not be constructed directly, but is created
+   * from the DynamoreBuilder.
+   * @param client client for sending requests to DynamoDB
+   * @param table name of table to get from
+   * @param key get an item by this key
+   * @param options additional options for the Dynamodb commands
+   */
   constructor(
     private client: DynamoDBDocumentClient,
     private table: string,
@@ -42,7 +50,13 @@ implements
     };
     this.maxBackoff = fetchOptions?.maxBackoff ?? 500;
   }
-
+  /**
+   * Select a subset of attributes. Since all attributes are internally
+   * mapped with projection expression, do not worry about names that
+   * conflict with DynamoDB protected strings.
+   * @param attributes list of attributes to retrieve. If empty, will
+   * retrieve all available attributes on the key.
+   */
   public select(...attributes: string[]) {
     if (attributes.length > 0) {
       const { ExpressionAttributeNames, ProjectionExpression } =
@@ -54,14 +68,23 @@ implements
     }
     return this;
   }
+  /**
+   * Return the underlying command sent to DynamoDB.
+   * Can be useful for debugging.
+   */
   public get command(): BatchGetCommand {
     return new BatchGetCommand(this._command);
   }
-
+  /**
+   * Return the underlying command input sent to DynamoDB.
+   * Can be useful for debugging.
+   */
   public get commandInput(): BatchGetCommandInput {
     return this._command;
   }
-
+  /**
+   * Execute the command.
+   */
   async send(): Promise<GetManyOutput> {
     const res: GetManyOutput = { Items: [], $metadata: [] };
     let batch = await this.yield().next();
@@ -109,9 +132,18 @@ implements
 }
 
 export class DynamoreGet
-implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
+  implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
 {
   private _command: GetCommandInput;
+  /**
+   * Builder for retrieving a single item from a table, by key.
+   * This class should not be constructed directly, but is created
+   * from the DynamoreBuilder.
+   * @param client client for sending requests to DynamoDB
+   * @param table name of table to get from
+   * @param key get an item by this key
+   * @param options additional options for the Dynamodb commands
+   */
   constructor(
     private client: DynamoDBDocumentClient,
     table: string,
@@ -126,6 +158,13 @@ implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
     };
   }
 
+  /**
+   * Select a subset of attributes. Since all attributes are internally
+   * mapped with projection expression, do not worry about names that
+   * conflict with DynamoDB protected strings.
+   * @param attributes list of attributes to retrieve. If empty, will
+   * retrieve all available attributes on the key.
+   */
   public select(...attributes: string[]) {
     if (attributes.length > 0) {
       const { ExpressionAttributeNames, ProjectionExpression } =
@@ -136,14 +175,25 @@ implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
     return this;
   }
 
+  /**
+   * Return the underlying command sent to DynamoDB.
+   * Can be useful for debugging.
+   */
   public get command(): GetCommand {
     return new GetCommand(this._command);
   }
 
+  /**
+   * Return the underlying command input sent to DynamoDB.
+   * Can be useful for debugging.
+   */
   public get commandInput(): GetCommandInput {
     return this._command;
   }
 
+  /**
+   * Execute the command.
+   */
   public send(): Promise<GetCommandOutput> {
     return this.client.send(new GetCommand(this._command));
   }
