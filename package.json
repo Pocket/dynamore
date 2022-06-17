@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/Pocket/dynamore#readme",
   "devDependencies": {
-    "@pocket-tools/eslint-config": "^1.1.0",
-    "@pocket-tools/tsconfig": "^1.0.2",
+    "@pocket-tools/eslint-config": "1.1.0",
+    "@pocket-tools/tsconfig": "1.0.2",
     "@types/jest": "28.1.1",
     "jest": "28.1.1",
     "ts-jest": "28.0.5"
