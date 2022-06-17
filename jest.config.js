@@ -7,4 +7,5 @@ module.exports = {
   restoreMocks: true,
   coverageProvider: 'v8',
   setupFiles: ['./jest.setup.js'],
+  testTimeout: 15000,
 };

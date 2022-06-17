@@ -5,6 +5,8 @@ import { dynamore } from '../lib/dynamore';
 import { seed, truncateTable } from './utils';
 import { seedData as hashSeed } from './fixtures/test-hash-table-seed';
 import { seedData as compositeSeed } from './fixtures/test-composite-table-seed';
+import { seedData as bigSeed } from './fixtures/test-big-table-seed';
+import sinon from 'sinon';
 
 describe('DynamoreGet', () => {
   const client = new DynamoDBClient({
@@ -20,7 +22,11 @@ describe('DynamoreGet', () => {
     await seed(client, hashSeed);
     await truncateTable('test-composite-table', client);
     await seed(client, compositeSeed);
+    await truncateTable('test-big-table', client);
+    await seed(client, bigSeed);
   });
+  afterEach(() => sinon.resetHistory());
+  afterAll(() => sinon.restore());
   describe('find', () => {
     it('gets all available attributes for a key', async () => {
       const res = await hashTable.find({ id: 'abc123' }).send();
@@ -148,6 +154,16 @@ describe('DynamoreGet', () => {
         species: 'human',
         aka: undefined,
       });
+    });
+    it('makes multiple requests for unprocessed keys', async () => {
+      const sendSpy = sinon.spy(dynamodb, 'send');
+      const bigTable = dynamore(dynamodb)('test-big-table');
+      const keys = [...Array(50).keys()].map((_id) => ({
+        id: _id.toString(),
+      }));
+      const res = await bigTable.findMany(keys).send();
+      expect(res.Items.length).toEqual(50);
+      expect(sendSpy.callCount).toEqual(2);
     });
   });
 });

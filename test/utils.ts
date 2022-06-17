@@ -9,10 +9,16 @@ import {
 
 export async function seed(
   client: DynamoDBClient,
-  data: BatchWriteCommandInput
+  data: BatchWriteCommandInput | BatchWriteCommandInput[]
 ) {
   const dynamolib = DynamoDBDocumentClient.from(client);
-  await dynamolib.send(new BatchWriteCommand(data));
+  if (data instanceof Array) {
+    for await (const input of data) {
+      await dynamolib.send(new BatchWriteCommand(input));
+    }
+  } else {
+    await dynamolib.send(new BatchWriteCommand(data));
+  }
 }
 
 export async function truncateTable(table: string, client: DynamoDBClient) {

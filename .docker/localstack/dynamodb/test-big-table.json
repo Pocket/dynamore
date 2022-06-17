@@ -11,10 +11,6 @@
       {
         "AttributeName": "id",
         "AttributeType": "S"
-      },
-      {
-        "AttributeName": "name",
-        "AttributeType": "S"
       }
     ]
   }

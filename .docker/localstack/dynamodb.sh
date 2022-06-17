@@ -2,7 +2,7 @@
 set -x
 
 TABLE_DEFINITIONS=(
-  'test-hash-table' 'test-composite-table'
+  'test-hash-table' 'test-composite-table' 'test-big-table'
 )
 
 for json_file in "${TABLE_DEFINITIONS[@]}"; do

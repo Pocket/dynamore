@@ -13,7 +13,7 @@ import { backoff } from './utils';
 import { GetManyOutput, BatchGetItemKeys } from './types';
 
 export class DynamoreGetMany
-implements
+  implements
     DynamoreBuilder<BatchGetCommandInput, BatchGetCommand, GetManyOutput>
 {
   private _command: BatchGetCommandInput;
@@ -38,7 +38,6 @@ implements
     fetchOptions?: { maxBackoff: number }
   ) {
     const { ConsistentRead, ReturnConsumedCapacity } = options ?? {};
-    // TODO: Split out requests > 100
     this._command = {
       RequestItems: {
         [table]: {
@@ -87,24 +86,26 @@ implements
    */
   async send(): Promise<GetManyOutput> {
     const res: GetManyOutput = { Items: [], $metadata: [] };
-    let batch = await this.yield().next();
+    const iter = this.yield();
+    let batch = await iter.next();
     const items = batch.value?.Responses[this.table];
     if (items) {
       res.Items.push(...items);
       res.$metadata.push(batch.value?.$metadata);
     }
     while (!batch.done) {
-      batch = await this.yield().next();
+      batch = await iter.next();
       const items = batch.value?.Responses[this.table];
-      if (items) res.Items.push(...items);
+      if (items) {
+        res.Items.push(...items);
+        res.$metadata.push(batch.value?.$metadata);
+      }
     }
     return res as any;
   }
 
   private async *yield() {
-    // TODO: Split out requests > 100
-    // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html
-    // TODO: Error handling?
+    // TODO: Error handling
     let unprocessedKeys = this._command['RequestItems'];
     let pages = 0;
     let response: BatchGetCommandOutput;
@@ -132,7 +133,7 @@ implements
 }
 
 export class DynamoreGet
-implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
+  implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
 {
   private _command: GetCommandInput;
   /**
