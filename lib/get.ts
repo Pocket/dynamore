@@ -12,8 +12,8 @@ import { buildExpression } from './expressions';
 import { backoff } from './utils';
 import { GetManyOutput, BatchGetItemKeys } from './types';
 
-export class DynamoreGetMany
-  implements
+export class DynamoreGetMany // eslint-disable-next-line prettier/prettier
+implements
     DynamoreBuilder<BatchGetCommandInput, BatchGetCommand, GetManyOutput>
 {
   private _command: BatchGetCommandInput;
@@ -132,8 +132,8 @@ export class DynamoreGetMany
   }
 }
 
-export class DynamoreGet
-  implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
+export class DynamoreGet // eslint-disable-next-line prettier/prettier
+implements DynamoreBuilder<GetCommandInput, GetCommand, GetCommandOutput>
 {
   private _command: GetCommandInput;
   /**
