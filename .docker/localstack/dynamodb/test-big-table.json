@@ -1,0 +1,16 @@
+{
+    "TableName": "test-big-table",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+      {
+        "AttributeName": "id",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "id",
+        "AttributeType": "S"
+      }
+    ]
+  }
