@@ -1,5 +1,10 @@
-import { DynamoDBDocumentClient, GetCommandInput } from '@aws-sdk/lib-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  GetCommandInput,
+  PutCommandInput,
+} from '@aws-sdk/lib-dynamodb';
 import { DynamoreGet, DynamoreGetMany } from './get';
+import { DynamorePut } from './upsert';
 
 /**
  * Entrypoint for creating a dynamore connection. The dynamore
@@ -43,5 +48,22 @@ class Dynamore {
     options?: Pick<GetCommandInput, 'ConsistentRead' | 'ReturnConsumedCapacity'>
   ): DynamoreGetMany {
     return new DynamoreGetMany(this.client, this.table, keys, options);
+  }
+  /**
+   *
+   * @param key
+   * @param item
+   * @param options
+   * @returns
+   */
+  public insert(
+    key: Record<string, any>,
+    item: PutCommandInput['Item'],
+    options?: Pick<
+      PutCommandInput,
+      'ReturnItemCollectionMetrics' | 'ReturnConsumedCapacity'
+    >
+  ) {
+    return new DynamorePut(this.client, this.table, key, item, options);
   }
 }

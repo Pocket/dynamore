@@ -87,7 +87,7 @@ describe('DynamoreGet', () => {
       const res = await hashTable
         .findMany([{ id: 'hij789' }, { id: 'klm123' }])
         .send();
-      expect(res.Items.length).toEqual(2);
+      expect(res.Items?.length).toEqual(2);
       expect(res.Items).toContainEqual({
         id: 'hij789',
         name: 'sypha',
@@ -106,7 +106,7 @@ describe('DynamoreGet', () => {
           { name: 'vegeta', powerLevel: 18000 },
         ])
         .send();
-      expect(res.Items.length).toEqual(2);
+      expect(res.Items?.length).toEqual(2);
       expect(res.Items).toContainEqual({
         name: 'goku',
         powerLevel: 100,
@@ -128,7 +128,7 @@ describe('DynamoreGet', () => {
         .findMany([{ id: 'def456' }, { id: 'klm123' }])
         .select('name', 'species')
         .send();
-      expect(res.Items.length).toEqual(2);
+      expect(res.Items?.length).toEqual(2);
       expect(res.Items).toContainEqual({
         name: 'alucard',
         species: 'dhampir',
@@ -143,7 +143,7 @@ describe('DynamoreGet', () => {
         .findMany([{ id: 'def456' }, { id: 'klm123' }])
         .select('name', 'species', 'aka')
         .send();
-      expect(res.Items.length).toEqual(2);
+      expect(res.Items?.length).toEqual(2);
       expect(res.Items).toContainEqual({
         name: 'alucard',
         species: 'dhampir',
@@ -162,7 +162,7 @@ describe('DynamoreGet', () => {
         id: _id.toString(),
       }));
       const res = await bigTable.findMany(keys).send();
-      expect(res.Items.length).toEqual(50);
+      expect(res.Items?.length).toEqual(50);
       expect(sendSpy.callCount).toEqual(2);
     });
   });
