@@ -8,7 +8,7 @@ import {
   GetCommandInput,
   GetCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
-import { buildExpression } from './expressions';
+import { buildExpression } from './projectionExpression';
 import { backoff } from './utils';
 import { GetManyOutput, BatchGetItemKeys } from './types';
 
@@ -24,7 +24,7 @@ implements
    * from the DynamoreBuilder.
    * @param client client for sending requests to DynamoDB
    * @param table name of table to get from
-   * @param key get an item by this key
+   * @param itemKeys get items by these keys
    * @param options additional options for the Dynamodb commands
    */
   constructor(

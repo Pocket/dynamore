@@ -1,57 +1,122 @@
-import { buildExpression } from './expressions';
+import {
+  ExpressionAttributeNamesFactory,
+  ExpressionAttributeValuesFactory,
+} from './expressions';
 
-describe('projection expression builder', () => {
-  it('maps a single value to expression', () => {
-    const expected = {
-      ProjectionExpression: '#a',
-      ExpressionAttributeNames: {
-        '#a': 'alucard',
-      },
-    };
-    const actual = buildExpression('alucard');
-    expect(actual).toEqual(expected);
+describe('expression attribute', () => {
+  describe('names', () => {
+    it('works for a single name', () => {
+      const expGen = new ExpressionAttributeNamesFactory('str');
+      const expected = {
+        '#n0': 'str',
+      };
+      expect(expGen.expression).toEqual(expected);
+    });
+    it('works for multiple names', () => {
+      const expGen = new ExpressionAttributeNamesFactory(
+        'str',
+        'dex',
+        'con',
+        'int',
+        'wis',
+        'cha'
+      );
+      const expected = {
+        '#n0': 'str',
+        '#n1': 'dex',
+        '#n2': 'con',
+        '#n3': 'int',
+        '#n4': 'wis',
+        '#n5': 'cha',
+      };
+      expect(expGen.expression).toEqual(expected);
+    });
+    it('createAlias adds a new alias', () => {
+      const expGen = new ExpressionAttributeNamesFactory('insight');
+      const expected = {
+        '#n0': 'insight',
+        '#n1': 'intimidation',
+        '#n2': 'history',
+      };
+      expGen.addAliasFor('intimidation');
+      expGen.addAliasFor('history');
+      expect(expGen.expression).toEqual(expected);
+    });
+    it('has reverse lookup from alias to attribute name', () => {
+      const expGen = new ExpressionAttributeNamesFactory(
+        'str',
+        'dex',
+        'con',
+        'int',
+        'wis',
+        'cha'
+      );
+      expect(expGen.getAttributeFrom('#n2')).toEqual('con');
+      expect(expGen.getAttributeFrom('#n4')).toEqual('wis');
+    });
+    it.todo('works for nested values');
   });
-  it('maps multiple values to expressions without collisions', () => {
-    const expected = {
-      ProjectionExpression: '#a, #d',
-      ExpressionAttributeNames: {
-        '#a': 'alucard',
-        '#d': 'dracula',
-      },
-    };
-    const actual = buildExpression('alucard', 'dracula');
-    expect(actual).toEqual(expected);
-  });
-  it('handles collisions in attribute names', () => {
-    const expected = {
-      ProjectionExpression: '#f, #f1, #f2',
-      ExpressionAttributeNames: {
-        '#f': 'fang',
-        '#f1': 'fist',
-        '#f2': 'fire',
-      },
-    };
-    const actual = buildExpression('fang', 'fist', 'fire');
-    expect(actual).toEqual(expected);
-  });
-  // TODO
-  it.skip('handles nested attribute and array accessors with collisions and repeats', () => {
-    const expected = {
-      ProjectionExpression: '#f.#f1, #a, #h[0].#b.#c.#f1',
-      ExpressionAttributeNames: {
-        '#f': 'face',
-        '#f1': 'fang',
-        '#a': 'armpit',
-        '#h': 'hand',
-        '#b': 'bow',
-        '#c': 'cross',
-      },
-    };
-    const actual = buildExpression(
-      'fang.fist',
-      'armpit',
-      'hand[0].bow.cross.fang'
-    );
-    expect(actual).toEqual(expected);
+  describe('values', () => {
+    it('works for arrays', async () => {
+      const expGen = new ExpressionAttributeValuesFactory(
+        ['str', 'dex', 'con'],
+        [8, 16, 12]
+      );
+      const expected = {
+        ':v0': ['str', 'dex', 'con'],
+        ':v1': [8, 16, 12],
+      };
+      expect(expGen.expression).toEqual(expected);
+    });
+    it('works for scalars (strings and numbers)', () => {
+      const expGen = new ExpressionAttributeValuesFactory('str', 8);
+      const expected = {
+        ':v0': 'str',
+        ':v1': 8,
+      };
+      expect(expGen.expression).toEqual(expected);
+    });
+    it('works for objects', () => {
+      const expGen = new ExpressionAttributeValuesFactory(
+        {
+          str: 8,
+          dex: 16,
+          con: 12,
+        },
+        {
+          str: 16,
+          dex: 12,
+          con: 8,
+        }
+      );
+      const expected = {
+        ':v0': {
+          str: 8,
+          dex: 16,
+          con: 12,
+        },
+        ':v1': {
+          str: 16,
+          dex: 12,
+          con: 8,
+        },
+      };
+      expect(expGen.expression).toEqual(expected);
+    });
+    it('works for only a single value', () => {
+      const expGen = new ExpressionAttributeValuesFactory('str');
+      const expected = {
+        ':v0': 'str',
+      };
+      expect(expGen.expression).toEqual(expected);
+    });
+    it('works for adding values if initialized without any', () => {
+      const expGen = new ExpressionAttributeValuesFactory();
+      expGen.addAliasFor('str');
+      const expected = {
+        ':v0': 'str',
+      };
+      expect(expGen.expression).toEqual(expected);
+    });
   });
 });
