@@ -58,7 +58,7 @@ jobs:
           - AWS_XRAY_LOG_LEVEL=silent
           - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
       # localstack
-      - image: localstack/localstack@sha256:245b07a863c4258a78d398545d1968b128f56de2ec157153b3dab0c0303f722a
+      - image: localstack/localstack@sha256:fe49517ce1f444a45e79393d555d7648965eb98643392ae582006d3e83f867fc
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
