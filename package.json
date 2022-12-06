@@ -24,7 +24,7 @@
   "devDependencies": {
     "@pocket-tools/eslint-config": "2.0.0",
     "@pocket-tools/tsconfig": "2.0.1",
-    "@types/jest": "29.2.3",
+    "@types/jest": "29.2.4",
     "jest": "29.3.1",
     "ts-jest": "29.0.3",
     "@types/lodash": "4.14.191",
